@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import React, { useState } from 'react'
+import './App.css'
+import ReactPaginate from 'react-paginate'
+import jsonData from './MOCK_DATA.json'
+const App = () => {
+    const [user,setUser] = useState(jsonData.slice(0,101))
+    const [pageNumber,setPageNumber] = useState(0)
+    const userPerPage = 10;
+    const pageVisited = pageNumber* userPerPage
+    const pageCount = Math.ceil(user.length / userPerPage)
+    const changePage = ({selected}) => {
+        setPageNumber(selected)
+    }
+    const displayUsers = user.slice(pageVisited,pageVisited+userPerPage).map(item=>{
+        return (
+            <div key={item.id} className="users">
+                            <h3>{item.first_name}</h3>
+                            <h3>{item.last_name}</h3>
+                            <h3>{item.email}</h3>
+                        </div>
+        )
+    })
+    return (
+        <div>
+            <div className="card-container">
+                {displayUsers}
+                <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    pageCount={pageCount}
+                    onPageChange={changePage}
+                    containerClassName={"paginationBttns"}
+                    previousLinkClassName={"previousBttn"}
+                    nextLinkClassName={"nextBttn"}
+                    disabledClassName={"paginationDisabled"}
+                    activeClassName={"paginationActive"}     
+                    />
+            </div>
+        </div>
+    )
 }
 
-export default App;
+export default App
